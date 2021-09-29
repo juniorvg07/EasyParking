@@ -12,30 +12,33 @@ import java.util.logging.*;
  *
  * @author Junior Vasquez
  */
-public class conexionBD {
+public class conexion_bd {
         
     //Atributos para la conexión a la base de datos
-    private String url = ""; //Base de datos a llamar
+    private String url = "jdbc:mysql://localhost:3306/easyparking_db"; //Base de datos a llamar
+    private String driver = "com.mysql.cj.jdbc.Driver";
+    private String user = "root";
+    private String password = "0722";
     public Connection con = null; //Objeto: Estado de la conexión
     private Statement stmt = null;
     private ResultSet rs = null;
     
     //Constructor sin parámetros
-    public conexionBD(){      
-        url = "jdbc:sqlite:reto5db.db";
-        
+    public conexion_bd(){             
         try {
-            con = DriverManager.getConnection(url); //Obtener el estadco de la conexión
-            
-            if(con != null){
-                
-                DatabaseMetaData meta = con.getMetaData(); //No está vacío, entonces, meta va a guardar los metadatos
-                System.out.println("Base de datos conectada!!!" + meta.getDriverName());
-                
-            }   
-        }catch (SQLException error){
-            System.out.println(error.getMessage());
-        } 
+            //Asignacin del Driver
+            Class.forName(driver);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(conexion_bd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            // Realizar la conexion
+            con = DriverManager.getConnection(url, user, password);
+            con.setTransactionIsolation(8);
+            System.out.println("conectado");
+        } catch (SQLException ex) {
+            Logger.getLogger(conexion_bd.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     //Método que retorna la conexión
@@ -49,7 +52,7 @@ public class conexionBD {
             try{
                 con.close();
             } catch(SQLException error){
-                Logger.getLogger(conexionBD.class.getName()).log(Level.SEVERE, null, error);
+                Logger.getLogger(conexion_bd.class.getName()).log(Level.SEVERE, null, error);
             }
         }
     }   
@@ -147,5 +150,21 @@ public class conexionBD {
             return false;
         }
     }    
+       
+    public static void main(String[] args) {
+        conexion_bd cn=new conexion_bd();
+        Statement st0;
+        ResultSet rst;
+        try {
+            st0=cn.con.createStatement();
+            rst=st0.executeQuery("select * from clientes");
+            while (rst.next()) {                
+                System.out.println(rst.getInt("idclientes")+" " +rst.getString("nombre")+" " +rst.getString("apellidos"));
+            }
+            cn.con.close();
+        } catch (Exception e) {
+        }
+    
+    }
     
 }
