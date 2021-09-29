@@ -159,7 +159,7 @@ public class conexion_bd {
             st0=cn.con.createStatement();
             rst=st0.executeQuery("select * from clientes");
             while (rst.next()) {                
-                System.out.println(rst.getInt("idclientes")+" " +rst.getString("nombre")+" " +rst.getString("apellidos"));
+                System.out.println(rst.getInt("idclientes")+" " +rst.getString("nombre")+" " +rst.getString("apellidos")+" " +rst.getString("celular")+" " +rst.getString("tipoVehiculo")+" " +rst.getString("placaVehiculo"));
             }
             cn.con.close();
         } catch (Exception e) {
