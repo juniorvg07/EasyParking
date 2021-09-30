@@ -9,6 +9,6 @@ package logica;
  *
  * @author Junior Vasquez
  */
-public class usuario {
+public class clientes {
     
 }
