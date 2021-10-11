@@ -21,7 +21,20 @@ public class clientes {
     String celular;
     String tipoVehiculo;
     String placavehiculo;
+    String estado;
+    
     conexion_bd conexion=new conexion_bd();
+    
+    public clientes(int id, String nombre, String apellido, String celular, String tipoVehiculo, String placavehiculo, String estado) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.celular = celular;
+        this.tipoVehiculo = tipoVehiculo;
+        this.placavehiculo = placavehiculo;
+        this.estado = estado;
+    }
+
     public clientes(int id, String nombre, String apellido, String celular, String tipoVehiculo, String placavehiculo) {
         this.id = id;
         this.nombre = nombre;
@@ -29,9 +42,12 @@ public class clientes {
         this.celular = celular;
         this.tipoVehiculo = tipoVehiculo;
         this.placavehiculo = placavehiculo;
-        
     }
 
+    public clientes(String estado) {
+        this.estado = estado;
+    }
+    
     public clientes() {
     }
 
@@ -82,9 +98,23 @@ public class clientes {
     public void setPlacavehiculo(String placavehiculo) {
         this.placavehiculo = placavehiculo;
     }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    
     public boolean guardarCliente(){
-        String sentencia= "INSERT INTO clientes (nombre, apellidos, celular, tipoVehiculo, placaVehiculo ) VALUES('"+this.nombre+"','"+this.apellido+"','"+this.celular+"','"+this.tipoVehiculo+"','"+this.placavehiculo+"')";
-              return conexion.insertBD(sentencia);
+        conexion_bd conexion = new conexion_bd();
+        String sentencia= "INSERT INTO clientes (idclientes, nombre, apellidos, celular, tipoVehiculo, placavehiculo ) VALUES('"+this.id+"','"+this.nombre+"','"+this.apellido+"','"+this.celular+"','"+this.tipoVehiculo+"','"+this.placavehiculo+"')";
+        
+        conexion.insertBD(sentencia);
+        conexion.closeConnection();
+        
+        return true;
     }
     public boolean eliminarcliente(int idcliente){
        String sentencia="DELETE FROM clientes WHERE idcliente='"+idcliente+"'";
@@ -92,9 +122,17 @@ public class clientes {
        
     }
     public boolean actualizarcliente(int idcliente){
-    String sentencia= "UPDATE clientes SET nombre='"+this.nombre+"',apellidos='"+this.apellido+"',celular='"+this.celular+"',tipoVehiculo='"+this.tipoVehiculo+"',placaVehiculo='"+this.placavehiculo+"' WHERE idcliente="+idcliente+";";
-    return conexion.updateBD(sentencia);
+        conexion_bd conexion = new conexion_bd();
+        String sentencia= "UPDATE clientes SET estado='"+this.estado+"' WHERE idclientes="+idcliente+";";
+        return conexion.updateBD(sentencia);
     }
+    
+    public boolean actualizarcliente2(String placa){
+        conexion_bd conexion = new conexion_bd();
+        String sentencia= "UPDATE clientes SET estado='"+this.estado+"' WHERE placavehiculo='"+placa+"';";
+        return conexion.updateBD(sentencia);
+    }
+    
     public ArrayList<clientes>listarclientes(){
     ArrayList<clientes>listaclientes=new ArrayList<>();
     String sentencia="SELECT * FROM clientes";
@@ -103,12 +141,15 @@ public class clientes {
     try{
             while(RS.next()){
                 c=new clientes();
-                c.setId(RS.getInt("idcliente"));
+                c.setId(RS.getInt("idclientes"));
                 c.setNombre(RS.getString("nombre"));
-                 c.setApellido(RS.getString("apellido"));
-                 c.setCelular(RS.getString("celular"));
-                 c.setTipoVehiculo(RS.getString("tipoVehiculo"));
-                 c.setPlacavehiculo(RS.getString("placaVehiculo"));
+                c.setApellido(RS.getString("apellidos"));
+                c.setCelular(RS.getString("celular"));
+                c.setTipoVehiculo(RS.getString("tipoVehiculo"));
+                c.setPlacavehiculo(RS.getString("placavehiculo"));
+                c.setEstado(RS.getString("estado"));
+                
+                listaclientes.add(c);
                 
             }
         }catch(SQLException e){
